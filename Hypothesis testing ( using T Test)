@@ -1,4 +1,8 @@
-Definitions:
+#Conducted a hypothesis test to test that University towns have their mean housing prices less effected
+#by recessions. The housing price data is taken from zillow, university towns from wikipedia and gdp from
+#Bureau of Economic Analysis, US Department of Commerce.
+Since the probability that the prices are equal was too low, I concluded that university towns aren't much #
+#affected by recession when it comes to housing price.Definitions:
 
 A quarter is a specific three month period, Q1 is January through March, Q2 is April through June, Q3 is July through September, Q4 is October through December.
 A recession is defined as starting with two consecutive quarters of GDP decline, and ending with two consecutive quarters of GDP growth.
