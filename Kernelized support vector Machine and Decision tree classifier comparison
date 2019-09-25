@@ -1,0 +1,90 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+
+mush_df = pd.read_csv('mushrooms.csv')
+mush_df2 = pd.get_dummies(mush_df)
+
+X_mush = mush_df2.iloc[:,2:]
+y_mush = mush_df2.iloc[:,1]
+
+X_train2, X_test2, y_train2, y_test2 = train_test_split(X_mush, y_mush, random_state=0)
+
+
+X_subset = X_test2
+y_subset = y_test2
+
+
+
+def five():
+    
+    # returning top 5 imp features which the tree classifier used
+    from sklearn.tree import DecisionTreeClassifier
+    
+    tree_clf = DecisionTreeClassifier().fit(X_train2, y_train2)
+    
+    feature_names = []
+    
+    # Get index of importance leves since their's order is the same with feature columns
+    for index, importance in enumerate(tree_clf.feature_importances_):
+        # Add importance so we can further order this list, and add feature name with index
+        feature_names.append([importance, X_train2.columns[index]])
+    
+    # Descending sort
+    feature_names.sort(reverse=True)
+    # Turn in to a numpy array
+    feature_names = np.array(feature_names)
+    # Select only feature names
+    feature_names = feature_names[:5,1]
+    # Turn back to python list
+    feature_names = feature_names.tolist()
+    
+    return X_mush.shape 
+
+
+
+five()
+
+
+
+
+
+
+
+def six():
+    from sklearn.svm import SVC
+    from sklearn.model_selection import validation_curve
+
+#validation curve for different gamma values, returning training and test set scores for different gamma values on a log scale
+    svc = SVC(kernel='rbf', C=1, random_state=0)
+    gamma = np.logspace(-4,1,6)
+    train_scores, test_scores = validation_curve(svc, X_subset, y_subset,
+                            param_name='gamma',
+                            param_range=gamma,
+                            scoring='accuracy')
+
+    scores = (train_scores.mean(axis=1), test_scores.mean(axis=1))
+        
+    return scores 
+
+
+
+six()
+
+
+
+def seven():
+    
+    Underfitting = np.logspace(-4,1,6)[0]
+    Overfitting = np.logspace(-4,1,6)[5]
+    Good_Generalization = np.logspace(-4,1,6)[3]
+    
+    #returning the underfit gamma value, overfit value and the right value after determining from the validation curve
+    
+    
+    
+    
+    return (Underfitting, Overfitting, Good_Generalization )
+
+
+seven()
