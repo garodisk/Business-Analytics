@@ -121,54 +121,6 @@ five()
 
 
 
-def answer_five():
-    from sklearn.linear_model import LogisticRegression
-    from sklearn.metrics import precision_recall_curve
-    from sklearn.metrics import roc_curve
-    from sklearn.metrics import roc_auc_score
-    from sklearn.metrics import precision_score
-    from sklearn.metrics import recall_score
-    #import matplotlib.pyplot as plt
-
-    
-    lr = LogisticRegression().fit(X_train, y_train)
-    precision, recall, thresholds = precision_recall_curve(y_test, lr.decision_function(X_test))
-    
-    closest_zero = np.argmin(np.abs(thresholds))
-    closest_zero_p = precision[closest_zero]
-    closest_zero_r = recall[closest_zero]
-
-    #plt.figure()
-    #plt.xlim([0.0, 1.01])
-    #plt.ylim([0.0, 1.01])
-    #plt.plot(precision, recall, label='Precision-Recall Curve')
-    #plt.plot(closest_zero_p, closest_zero_r, 'o', markersize = 12, fillstyle = 'none', c='r', mew=3)
-    #plt.xlabel('Precision', fontsize=16)
-    #plt.ylabel('Recall', fontsize=16)
-    #plt.axes().set_aspect('equal')
-    #plt.show()
-    
-    recall_val = np.interp(.75, precision, recall)
-    
-    
-    fpr, tpr, thr = roc_curve(y_test, lr.decision_function(X_test))
-    #closest_zero1 = np.argmin(np.abs(thr))
-  
-
-    #plt.plot(fpr, tpr, label="ROC Curve")
-    #plt.xlabel("FPR")
-    #plt.ylabel("TPR (recall)")
-# find threshold closest to zero
-    close_zero = np.argmin(np.abs(thr))
-    #plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
-    #label="threshold zero", fillstyle="none", c='k', mew=2)
-    #plt.legend(loc=4)
-    #plt.show()
-    
-    tp_val = np.interp(.16, fpr, tpr)
-    return (recall_val, tp_val)
-
-five()
 
 
 def six():    
