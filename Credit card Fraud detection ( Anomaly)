@@ -1,0 +1,201 @@
+import numpy as np
+import pandas as pd
+#22000 data and 30 variables
+def one():
+    
+    fraud_data = pd.read_csv("fraud_data.csv")
+    total_instances = fraud_data.shape[0]
+    perc_fraud = sum(fraud_data['Class'] == 1)/total_instances
+    return perc_fraud
+
+
+one()
+
+from sklearn.model_selection import train_test_split
+df = pd.read_csv("fraud_data.csv")
+#df = pd.read_csv('readonly/fraud_data.csv')
+
+X = df.iloc[:,:-1]
+y = df.iloc[:,-1]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0)
+
+
+#checking the balance of labels in data
+two():
+    from sklearn.dummy import DummyClassifier
+    from sklearn.metrics import recall_score, accuracy_score
+    
+    dc = DummyClassifier(strategy = "most_frequent").fit( X_train, y_train)
+    dc_predict = dc.predict(X_test)
+    accuracy_value = accuracy_score(y_test, dc_predict) 
+    recall_value = recall_score(y_test, dc_predict)
+    return   (accuracy_value,recall_value)
+    
+ 
+
+two()
+
+
+
+def three():
+    
+    from sklearn.metrics import recall_score, precision_score, accuracy_score
+    from sklearn.svm import SVC
+    
+    svc = SVC().fit(X_train, y_train)
+    accuracy_value = accuracy_score(y_test, svc.predict(X_test)) 
+    recall_value = recall_score(y_test, svc.predict(X_test))
+    precision_value = precision_score(y_test, svc.predict(X_test))
+
+   
+    
+    return (accuracy_value, recall_value, precision_value)
+    #return 3
+
+three()
+
+
+def four():
+    from sklearn.metrics import confusion_matrix
+    from sklearn.svm import SVC
+    
+    svc = SVC(C = 1e9, gamma = 1e-07).fit(X_train, y_train)
+    confusion_mat = confusion_matrix( y_test, svc.decision_function(X_test) >= -220)
+    #confusion_mat = confusion_matrix( y_test, svc.predict(X_test))
+    
+    #return confusion_mat
+    return confusion_mat
+
+
+
+four()
+
+def five():
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.metrics import precision_recall_curve
+    from sklearn.metrics import roc_curve
+    from sklearn.metrics import roc_auc_score
+    from sklearn.metrics import precision_score
+    from sklearn.metrics import recall_score
+    #import matplotlib.pyplot as plt
+
+    
+    lr = LogisticRegression().fit(X_train, y_train)
+    precision, recall, thresholds = precision_recall_curve(y_test, lr.decision_function(X_test))
+    
+    closest_zero = np.argmin(np.abs(thresholds))
+    closest_zero_p = precision[closest_zero]
+    closest_zero_r = recall[closest_zero]
+
+    #plt.figure()
+    #plt.xlim([0.0, 1.01])
+    #plt.ylim([0.0, 1.01])
+    #plt.plot(precision, recall, label='Precision-Recall Curve')
+    #plt.plot(closest_zero_p, closest_zero_r, 'o', markersize = 12, fillstyle = 'none', c='r', mew=3)
+    #plt.xlabel('Precision', fontsize=16)
+    #plt.ylabel('Recall', fontsize=16)
+    #plt.axes().set_aspect('equal')
+    #plt.show()
+    
+    recall_val = np.interp(.75, precision, recall)
+    
+    
+    fpr, tpr, thr = roc_curve(y_test, lr.decision_function(X_test))
+    #closest_zero1 = np.argmin(np.abs(thr))
+  
+
+    #plt.plot(fpr, tpr, label="ROC Curve")
+    #plt.xlabel("FPR")
+    #plt.ylabel("TPR (recall)")
+# find threshold closest to zero
+    close_zero = np.argmin(np.abs(thr))
+    #plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
+    #label="threshold zero", fillstyle="none", c='k', mew=2)
+    #plt.legend(loc=4)
+    #plt.show()
+    
+    tp_val = np.interp(.16, fpr, tpr)
+    return (recall_val, tp_val)
+five()
+
+
+
+def answer_five():
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.metrics import precision_recall_curve
+    from sklearn.metrics import roc_curve
+    from sklearn.metrics import roc_auc_score
+    from sklearn.metrics import precision_score
+    from sklearn.metrics import recall_score
+    #import matplotlib.pyplot as plt
+
+    
+    lr = LogisticRegression().fit(X_train, y_train)
+    precision, recall, thresholds = precision_recall_curve(y_test, lr.decision_function(X_test))
+    
+    closest_zero = np.argmin(np.abs(thresholds))
+    closest_zero_p = precision[closest_zero]
+    closest_zero_r = recall[closest_zero]
+
+    #plt.figure()
+    #plt.xlim([0.0, 1.01])
+    #plt.ylim([0.0, 1.01])
+    #plt.plot(precision, recall, label='Precision-Recall Curve')
+    #plt.plot(closest_zero_p, closest_zero_r, 'o', markersize = 12, fillstyle = 'none', c='r', mew=3)
+    #plt.xlabel('Precision', fontsize=16)
+    #plt.ylabel('Recall', fontsize=16)
+    #plt.axes().set_aspect('equal')
+    #plt.show()
+    
+    recall_val = np.interp(.75, precision, recall)
+    
+    
+    fpr, tpr, thr = roc_curve(y_test, lr.decision_function(X_test))
+    #closest_zero1 = np.argmin(np.abs(thr))
+  
+
+    #plt.plot(fpr, tpr, label="ROC Curve")
+    #plt.xlabel("FPR")
+    #plt.ylabel("TPR (recall)")
+# find threshold closest to zero
+    close_zero = np.argmin(np.abs(thr))
+    #plt.plot(fpr[close_zero], tpr[close_zero], 'o', markersize=10,
+    #label="threshold zero", fillstyle="none", c='k', mew=2)
+    #plt.legend(loc=4)
+    #plt.show()
+    
+    tp_val = np.interp(.16, fpr, tpr)
+    return (recall_val, tp_val)
+
+five()
+
+
+def six():    
+    from sklearn.model_selection import GridSearchCV
+    from sklearn.linear_model import LogisticRegression
+    
+    lr = LogisticRegression().fit(X_train, y_train)
+    param = {'penalty': ['l1', 'l2'],'C' : [0.01, 0.1, 1, 10, 100] }
+    gs = GridSearchCV(lr, param_grid =  param , scoring = 'recall')
+    gs.fit(X_train, y_train)
+    a = gs.cv_results_['mean_test_score'].reshape([5,2])
+    #return gs.cv_results_['mean_test_score']
+    
+    return a
+
+
+
+
+
+six()
+
+def GridSearch_Heatmap(scores):
+    %matplotlib notebook
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    plt.figure()
+    sns.heatmap(scores.reshape(5,2), xticklabels=['l1','l2'], yticklabels=[0.01, 0.1, 1, 10, 100])
+    plt.yticks(rotation=0);
+
+#GridSearch_Heatmap(six())
